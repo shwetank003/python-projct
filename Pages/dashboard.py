@@ -13,30 +13,36 @@ st.dataframe(df)
 st.sidebar.header("Filter options")
 
 #Product filter
-Prodect = st.sidebar.multiselect('Product',
-                                options=df['Region'].unique(),
-                                default=df['Region'].unique())
+Product_category = st.sidebar.multiselect('Product Category',
+                                options=df['Product_Category'].unique(),
+                                default=df['Product_Category'].unique())
 
 #Sales Amount filter
-min_salary,max_salary= st.sidebar.slider('Sales_Amount',
+min_sales,max_sales= st.sidebar.slider('Sales_Amount',
                             min_value=int(df['Sales_Amount'].min()),
                             max_value= int(df['Sales_Amount'].max()),
                             value=(int(df['Sales_Amount'].min()),int(df['Sales_Amount'].max())))
+
+# Applying filters
+filtered_df = df[
+    (df['Product_Category'].isin(Product_category)) &
+    (df['Sales_Amount'].between(min_sales, max_sales))
+]
 
 
 
 #create a pie chart for Product distribution
 st.subheader("Product Distribution")
-fig = px.pie(df,names='Product_ID',title="Product Distribution")
+fig = px.pie(filtered_df,names='Product_ID',title="Product Distribution")
 st.plotly_chart(fig)
 
 
 #create a histogram for Product distribution
-fig= px.histogram(df,x='Product_ID',title="Product Distribution", nbins=20)
+fig= px.histogram(filtered_df,x='Product_ID',title="Product Distribution", nbins=20)
 st.plotly_chart(fig)
 
 #Create a bar graph for Product Category in Region
-fig= px.bar(df,x='Product_Category',y='Region',title= "Product Category in Region")
+fig= px.bar(filtered_df,x='Product_Category',y='Region',title= "Product Category in Region")
 st.plotly_chart(fig)
 
 #Line graph for Sales Rep and Unit Price	
